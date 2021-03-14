@@ -1,0 +1,8 @@
+**/*.swp
+**/*.exe
+**/*.bat
+**/*.spec
+
+**/__pycache__
+**/dist
+**/build
