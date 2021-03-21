@@ -132,9 +132,11 @@ begin
       nifFileName := GetElementEditValues(armorAddon, genderModelString);
       extraPartDir := nifFileName + '__HDPT_extraParts';
       fullExtraPartDir := DataPath + 'meshes\' + extraPartDir;
+      if ansipos('meshes\', ansilowercase(nifFileName)) = 1 then
+        fullExtraPartDir := DataPath + extraPartDir;
 
       if not directoryexists(fullExtraPartDir) then
-        raise Exception.Create('Fatal error: Could not find extra Parts directory ' + extraPartDir + '!');
+        raise Exception.Create('Fatal error: Could not find extra Parts directory ' + fullExtraPartDir + '!');
       if FindFirst(fullExtraPartDir + '\*.nif', faAnyFile, searchResult) = 0 then
       begin
         extraTargetCounter := 0;
