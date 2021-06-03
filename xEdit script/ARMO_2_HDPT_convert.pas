@@ -146,7 +146,7 @@ begin
             searchResultName := searchResult.name;
             Delete(searchResultName, 1, 4); //get rid of the index at the beginning of the file
             extraTargetCounter := extraTargetCounter + 1;
-            extraTargetName := eTargetName + '_extraPart' + inttostr(extraPartCntr);
+            extraTargetName := eTargetName + '_extraPart' + Format('%.3d', [extraPartCntr]);
             extraTarget := Add(hdpt_entry, 'HDPT', true);
             BeginUpdate(extraTarget);
               //get rid of the file extension and replace ; with :
@@ -157,8 +157,8 @@ begin
 
               Add(extraTarget, 'MODL', true);
               SetElementEditValues(extraTarget, 'Model\MODL - Model FileName', extraPartDir + '\' + searchResult.name);
-              if extraTargetCounter = 1 then
-                SetElementEditValues(extraTarget, 'Model\MODL - Model FileName', nifFileName);
+              //if extraTargetCounter = 1 then
+              //  SetElementEditValues(extraTarget, 'Model\MODL - Model FileName', nifFileName);
 
               Add(extraTarget, 'RNAM', true);
               //HeadPartsAllRacesMinusBeast [FLST:000A803F]

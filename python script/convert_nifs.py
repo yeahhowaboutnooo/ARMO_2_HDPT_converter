@@ -47,6 +47,16 @@ files = glob.glob('./**/*.[nN][iI][fF]', recursive=True)
 extraParts = '__HDPT_extraParts'
 files = [f for f in files if extraParts not in f]
 
+#how certain we are that shape is in fact a hairmesh and not a collisionobject
+#(otherwise mfgfix/opparco-mfg can bug out, IF the first shape is a collisionobject)
+def meshCertainty(shape):
+	#shader and alpha property in nifskope
+	propCntr = 0
+	for prop in shape.bs_properties:
+		if prop is not None:
+			propCntr += 1
+	return propCntr
+
 def convertFile(f):
 	data = NifFormat.Data()
 
@@ -56,11 +66,6 @@ def convertFile(f):
 #	print(' done!')
 
 	niTriShapes = []
-	for b in data.roots[0].get_extra_datas():
-		if type(b) is NifFormat.NiStringExtraData:
-			if b.name.decode('utf-8') == 'HDT Skinned Mesh Physics Object':
-				data.roots[0].remove_extra_data(b)
-				break
 	for c in data.roots[0].children:
 		if type(c) is NifFormat.NiTriShape:
 			niTriShapes.append(c)
@@ -80,6 +85,12 @@ def convertFile(f):
 	for shape in niTriShapes:
 		data.roots[0].remove_child(shape)
 
+
+	# sort shapes by shader/alpha property count
+	# (otherwise facial expressions may stop working)
+	niTriShapes.sort(key=meshCertainty, reverse=True)
+
+
 	#add_child(child)
 	for i,shape in enumerate(niTriShapes):
 		data.roots[0].add_child(shape)
@@ -88,6 +99,12 @@ def convertFile(f):
 		with open(shapeFile, 'wb') as shapeStream:
 			data.write(shapeStream)
 		data.roots[0].remove_child(shape)
+		if i == 0:
+			for b in data.roots[0].get_extra_datas():
+				if type(b) is NifFormat.NiStringExtraData:
+					if b.name.decode('utf-8') == 'HDT Skinned Mesh Physics Object':
+						data.roots[0].remove_extra_data(b)
+						break
 #		print(' done!')
 
 if __name__ == '__main__':
