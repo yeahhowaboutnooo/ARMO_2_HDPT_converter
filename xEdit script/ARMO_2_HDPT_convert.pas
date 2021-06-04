@@ -157,8 +157,11 @@ begin
 
               Add(extraTarget, 'MODL', true);
               SetElementEditValues(extraTarget, 'Model\MODL - Model FileName', extraPartDir + '\' + searchResult.name);
-              //if extraTargetCounter = 1 then
-              //  SetElementEditValues(extraTarget, 'Model\MODL - Model FileName', nifFileName);
+
+              //fix for cornflakes no-ring version of xing-hair:
+              //uses the actual bodyslide-built collision body
+              if (aaCount > 0) and (extraTargetCounter = 1) then
+                SetElementEditValues(extraTarget, 'Model\MODL - Model FileName', nifFileName);
 
               Add(extraTarget, 'RNAM', true);
               //HeadPartsAllRacesMinusBeast [FLST:000A803F]
